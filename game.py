@@ -1,6 +1,35 @@
 # import the pygame module, so you can use it
 import pygame
- 
+import random
+import math
+
+SIZE = (1280, 720)
+
+class agentObj():
+    def __init__(self):
+        size = [random.uniform(0, SIZE[i] - 1) for i in range(2)]
+        velocity = 0.0
+        acceleration = 0.0
+        direction = 0.0 #radians
+        # pi/2 = 90degrees
+        # set to 90 is: self.direction = math.pi / 2
+
+        x_pos = 50
+        y_pos = 50
+        mass = 0.0
+        def getForce(self):
+            return ((0.5 * self.mass * (self.velocity * self.velocity))/2)
+
+        def getVelocity(self):
+            return self.velocity + self.acceleration
+
+        def getDirection(self):
+            return direction * (math.pi / 180)
+
+        def move(self):
+            self.x_pos += math.sin(self.getDirection) * self.getVelocity()
+            self.y_pos -= math.cos(self.getDirection) * self.getVelocity()
+        
 # define a main function
 def main():
      
@@ -8,9 +37,13 @@ def main():
     pygame.init()
     # load and set the logo
     logo = pygame.image.load("logo32x32.png")
+    #agent.move()
+    #agent.display()
     pygame.display.set_icon(logo)
     pygame.display.set_caption("minimal program")
      
+    player = agentObj()
+    player.direction
 
     # create a surface on screen that has the size of 240 x 180
     screen = pygame.display.set_mode((240,180))
@@ -60,38 +93,40 @@ def main():
         pressed = pygame.key.get_pressed()
 
         if pressed[pygame.K_w]:
-            ypos-=0.01
+            player.acceleration += 0.005
+            if player.direction < 90:
+                player.direction += 10
+            elif player.direction > 90 and player.direction < 270:
+                player.direction -= 10
+            elif player.direction > 269:
+                player.direction += 10
+
+            if player.direction >= 360:
+                player.direction -= 360
+
         if pressed[pygame.K_s]:
-            ypos+=0.01
+            player.acceleration += 0.005
+            if player.direction < 270 and player.direction > 89:
+                player.direction += 10
+            elif player.direction > 270:
+                player.direction -= 10
+            elif player.direction < 90:
+                player.direction -= 10
+
+            if player.direction >= 360:
+                player.direction -= 360
+
         if pressed[pygame.K_a]:
+            player.acceleration += 0.005
             xpos-=0.01
         if pressed[pygame.K_d]:
+            player.acceleration += 0.005
             xpos+=0.01
 
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
-            """
-            if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_LEFT:
-                    print("Pressed left")
-                if event.key == pygame.K_RIGHT:
-                    print("Pressed right")
-                if event.key == pygame.K_UP:
-                    print("Pressed up")
-                if event.key == pygame.K_DOWN:
-                    print("Pressed down")
-            if event.type == pygame.KEYUP:
-                if event.key == pygame.K_LEFT:
-                    print("The left arrow key was released.")
-                if event.key == pygame.K_RIGHT:
-                    print("The right arrow key was released.")
-                if event.key == pygame.K_UP:
-                    print("The up arrow key was released.")
-                if event.key == pygame.K_DOWN:
-                    print("The down arrow key was released.")
-            """
 
 
             # only do something if the event is of type QUIT
