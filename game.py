@@ -7,29 +7,25 @@ SIZE = (1280, 720)
 
 class agentObj():
     def __init__(self):
-        size = [random.uniform(0, SIZE[i] - 1) for i in range(2)]
-        velocity = 0.0
-        acceleration = 0.0
-        direction = 0.0 #radians
+        self.size = [random.uniform(0, SIZE[i] - 1) for i in range(2)]
+        self.velocity = 0.0
+        self.acceleration = 0.00
+        self.direction = 0.0 #radians
         # pi/2 = 90degrees
         # set to 90 is: self.direction = math.pi / 2
-
-        x_pos = 50
-        y_pos = 50
-        mass = 0.0
-        def getForce(self):
-            return ((0.5 * self.mass * (self.velocity * self.velocity))/2)
-
-        def getVelocity(self):
-            return self.velocity + self.acceleration
-
-        def getDirection(self):
-            return direction * (math.pi / 180)
-
-        def move(self):
-            self.x_pos += math.sin(self.getDirection) * self.getVelocity()
-            self.y_pos -= math.cos(self.getDirection) * self.getVelocity()
-        
+        self.x_pos = 50
+        self.y_pos = 50
+        self.mass = 0.0
+    def getForce(self):
+        return ((0.5 * self.mass * (self.velocity * self.velocity))/2)
+    def getVelocity(self):
+        return self.velocity + self.acceleration
+    def getDirection(self):
+        return float(self.direction * (math.pi / 180))
+    def move(self):
+        self.x_pos += math.sin(self.getDirection()) * self.getVelocity()
+        self.y_pos -= math.cos(self.getDirection()) * self.getVelocity()
+    
 # define a main function
 def main():
      
@@ -43,10 +39,12 @@ def main():
     pygame.display.set_caption("minimal program")
      
     player = agentObj()
-    player.direction
+
+    print(player.x_pos)
+
 
     # create a surface on screen that has the size of 240 x 180
-    screen = pygame.display.set_mode((240,180))
+    screen = pygame.display.set_mode((480,360))
     screen.fill((252,252,252)) #order matters here. Background first means its behind what comes next
     #screen.blit(logo, (0,0)) #use a background image here. the image should be as big or biger than the window
  
@@ -56,6 +54,7 @@ def main():
 
     #set alpha value
     logo.set_alpha(128)
+
 
     xpos = 50
     ypos = 50
@@ -75,9 +74,14 @@ def main():
     # main loop
     while running:
 #write the background over everything
-        screen.fill((252,252,252))
-
-        screen.blit(logo, (xpos,ypos)) 
+        #screen.fill((252,252,252))
+        pressed = pygame.key.get_pressed()
+        if pressed[pygame.K_w] or pressed[pygame.K_s] or pressed[pygame.K_a] or pressed[pygame.K_d]:
+            player.move()
+            print(player.x_pos, player.y_pos)
+        else:
+            player.acceleration = 0.0
+        screen.blit(logo, (player.x_pos, player.y_pos)) 
         pygame.display.flip()
         # check if the smiley is still on screen, if not change direction
         #if xpos>screen_width-64 or xpos<0:
@@ -92,36 +96,49 @@ def main():
 
         pressed = pygame.key.get_pressed()
 
-        if pressed[pygame.K_w]:
-            player.acceleration += 0.005
+        if pressed[pygame.K_d]:
+            player.acceleration += 0.000005
             if player.direction < 90:
-                player.direction += 10
+                player.direction += 10.0
             elif player.direction > 90 and player.direction < 270:
-                player.direction -= 10
+                player.direction -= 10.0
             elif player.direction > 269:
-                player.direction += 10
-
-            if player.direction >= 360:
-                player.direction -= 360
-
-        if pressed[pygame.K_s]:
-            player.acceleration += 0.005
-            if player.direction < 270 and player.direction > 89:
-                player.direction += 10
-            elif player.direction > 270:
-                player.direction -= 10
-            elif player.direction < 90:
-                player.direction -= 10
+                player.direction += 10.0
 
             if player.direction >= 360:
                 player.direction -= 360
 
         if pressed[pygame.K_a]:
-            player.acceleration += 0.005
-            xpos-=0.01
-        if pressed[pygame.K_d]:
-            player.acceleration += 0.005
-            xpos+=0.01
+            player.acceleration += 0.000005
+            if player.direction < 270 and player.direction > 89:
+                player.direction += 10.0
+            elif player.direction > 270:
+                player.direction -= 10.0
+            elif player.direction < 90:
+                player.direction -= 10.0
+
+            if player.direction >= 360:
+                player.direction -= 360
+
+        if pressed[pygame.K_s]:
+            player.acceleration += 0.000005
+            if player.direction < 180:
+                player.direction += 10.0
+            elif player.direction > 180:
+                player.direction -= 10.0
+
+            if player.direction >= 360:
+                player.direction -= 360
+
+        if pressed[pygame.K_w]:
+            player.acceleration += 0.000005
+            if player.direction < 180 and player.direction != 0:
+                player.direction -= 10.0
+            elif player.direction >= 180:
+                player.direction += 10.0
+            
+            if player.direction >= 360:
+                player.direction -= 360
 
         # event handling, gets all event from the event queue
         for event in pygame.event.get():
